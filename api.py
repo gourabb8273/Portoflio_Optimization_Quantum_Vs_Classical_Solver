@@ -3,16 +3,18 @@ from flask_restful import Api, Resource
 import time
 import json
 from dimod import Integer
+from flask_ngrok import run_with_ngrok
 import dimod
 from dwave.system import EmbeddingComposite, DWaveSampler, LeapHybridCQMSampler
 from ortools.linear_solver import pywraplp
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 
-
+# run_with_ngrok(app)
 CLASSICAL_FILE = 'classical_result.json'
 QUANTUM_FILE = 'quantum_result.json'
 
@@ -152,4 +154,6 @@ api.add_resource(QuantumOptimization, '/quantum')
 api.add_resource(Comparison, '/comparison')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # port = int(os.environ.get('PORT', 5000))  # Use PORT environment variable or default to 5000
+    # app.run(port=port)
+    app.run(host='0.0.0.0', port=5000)
