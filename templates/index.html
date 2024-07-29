@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Optimization</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="problem">
+            <h1>Portfolio Optimization</h1>
+            <h3>Problem Statement</h3>
+            <p>
+                In this portfolio optimization problem, we aim to distribute investments across four stocks to achieve the highest return while keeping risk in check. The goal is to optimize the portfolio consisting of Apple, Microsoft, JP Morgan, and Boeing.
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stocks</th>
+                        <th>Yearly Avg. Return</th>
+                        <th>Yearly Avg. Loss</th>
+                        <th>Constraints</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Apple, Microsoft, JP Morgan, Boeing</td>
+                        <td>
+                            Apple: 26.50%<br>
+                            Microsoft: 26.28%<br>
+                            JP Morgan: 26.96%<br>
+                            Boeing: -0.88%
+                        </td>
+                        <td>
+                            Apple: 30.13% <br>
+                            Microsoft: 21.24% <br>
+                            JP Morgan: 21.55% <br>
+                            Boeing: 44.45% <br>
+                            
+                        </td>
+
+                        <td>
+                            - The total investment must be 100% of the portfolio.<br>
+                            - Each stock must receive a minimum investment of 2% to ensure diversification.<br>
+                            - The portfolio's risk should not exceed 22%.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                Let's explore the solution using different approach
+            </p>
+        </div>
+            
+            <div class="card">
+                <div class="result-card" id="classical-card">
+                    <h3>Classical Optimization (GLOP)</h3>
+                    <button onclick="runClassical()">Run Optimization</button>
+                    <div id="classical-result" class="result-box"></div>
+                </div>
+            </div>
+    
+            <!-- Quantum Optimization Card -->
+            <div class="card">
+                <div class="result-card" id="quantum-card">
+                    <h3>Quantum Optimization (Hybrid Solver)</h3>
+                    <button onclick="runQuantum()">Run Optimization</button>
+                    <div id="quantum-result" class="result-box"></div>
+                </div>
+            </div>
+    
+            <!-- Comparison Card -->
+            <div class="card">
+                <div class="result-card" id="comparison-card">
+                    <h3>Comparison</h3>
+                    <button onclick="runComparison()">Run Comparison</button>
+                    <div id="comparison-result" class="result-box"></div>
+                </div>
+            </div>
+        </div>
+            <!-- <div class="button-group">
+                <button onclick="runClassical()">Classical Optimization (GLOP) </button>
+                <button onclick="runQuantum()">Quantum Optimization (Hybrid Solver)</button>
+                <button onclick="runComparison()">Comparison</button>
+            </div>
+            <div class="result-card" id="classical-card">
+                <h3>Classical Optimization</h3>
+                <div id="classical-result" class="result-box"></div>
+            </div>
+            <div class="result-card" id="quantum-card">
+                <h3>Quantum Optimization</h3>
+                <div id="quantum-result" class="result-box"></div>
+            </div>
+            <div class="result-card" id="comparison-card">
+                <h3>Comparison</h3>
+                <div id="comparison-result" class="result-box"></div>
+            </div> -->
+        </div>
+
+        <script>
+            function runClassical() {
+                document.getElementById("classical-result").innerHTML = "<div class='spinner'></div>";
+                fetch('http://localhost:5000/classical')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("classical-result").innerHTML = `
+                            <table>
+                                <tr><th>Metric</th><th>Value</th></tr>
+                                <tr><td>Return</td><td>${data.return.toFixed(2)}%</td></tr>
+                                <tr><td>Risk</td><td>${data.risk.toFixed(2)}%</td></tr>
+                                <tr><td>Sharpe Ratio</td><td>${data.sharpe_ratio.toFixed(5)}</td></tr>
+                                <tr><td>Allocation</td><td>${formatAllocation(data.allocation)}</td></tr>
+                                <tr><td>Time Taken</td><td>${data.time_taken.toFixed(2)} seconds</td></tr>
+                            </table>
+                        `;
+                    })
+                    .catch(error => console.error('Error fetching classical data:', error));
+            }
+
+            function runQuantum() {
+                document.getElementById("quantum-result").innerHTML = "<div class='spinner'></div>";
+                fetch('http://localhost:5000/quantum')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("quantum-result").innerHTML = `
+                            <table>
+                                <tr><th>Metric</th><th>Value</th></tr>
+                                <tr><td>Return</td><td>${data.return.toFixed(2)}%</td></tr>
+                                <tr><td>Risk</td><td>${data.risk.toFixed(2)}%</td></tr>
+                                <tr><td>Sharpe Ratio</td><td>${data.sharpe_ratio.toFixed(5)}</td></tr>
+                                <tr><td>Allocation</td><td>${formatAllocation(data.allocation)}</td></tr>
+                                <tr><td>Time Taken</td><td>${data.time_taken.toFixed(2)} seconds</td></tr>
+                            </table>
+                        `;
+                    })
+                    .catch(error => console.error('Error fetching quantum data:', error));
+            }
+
+            function runComparison() {
+                document.getElementById("comparison-result").innerHTML = "<div class='spinner'></div>";
+                fetch('http://localhost:5000/comparison')
+                    .then(response => response.json())
+                    .then(data => {
+                        const classicalSharpe = data.classical.sharpe_ratio.toFixed(5);
+                        const quantumSharpe = data.quantum.sharpe_ratio.toFixed(5);
+                        const sharpeChange = ((quantumSharpe - classicalSharpe) / classicalSharpe * 100).toFixed(5);
+                        document.getElementById("comparison-result").innerHTML = `
+                            <table class="comparison-table">
+                                <tr><th>Metric</th><th>Classical</th><th>Quantum</th></tr>
+                                <tr><td>Return</td><td>${data.classical.return.toFixed(2)}%</td><td>${data.quantum.return.toFixed(2)}%</td></tr>
+                                <tr><td>Risk</td><td>${data.classical.risk.toFixed(2)}%</td><td>${data.quantum.risk.toFixed(2)}%</td></tr>
+                                <tr><td>Sharpe Ratio</td><td>${data.classical.sharpe_ratio.toFixed(5)}</td><td>${data.quantum.sharpe_ratio.toFixed(5)} (${sharpeChange}%)</td></tr>
+                                <tr><td>Time Taken</td><td>${data.classical.time_taken.toFixed(2)} seconds</td><td>${data.quantum.time_taken.toFixed(2)} seconds</td></tr>
+                            </table>
+                        `;
+                    })
+                    .catch(error => console.error('Error fetching comparison data:', error));
+            }
+
+            function formatAllocation(allocation) {
+                return Object.keys(allocation).map(stock => {
+                    return `${stock}: ${allocation[stock].toFixed(2)}%`;
+                }).join(', ');
+            }
+        </script>
+    </div>
+</body>
+</html>
