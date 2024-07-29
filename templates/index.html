@@ -359,7 +359,7 @@ th {
                 document.getElementById("classical-result").innerHTML = "<div class='spinner'></div>";
                 // debugger
                 // fetch('http://localhost:5000/classical')
-                fetch(`http://localhost:5005/classical?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
+                fetch(`http://localhost:5006/classical?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
                     .then(response => response.json())
                     .then(data => {
                         if(data.error){
@@ -391,7 +391,7 @@ th {
             const minAllocation = document.getElementById('min_allocation_percentage').value;
             const acceptedRisk = document.getElementById('accepted_overal_risk').value;
                 document.getElementById("quantum-result").innerHTML = "<div class='spinner'></div>";
-                fetch(`http://localhost:5005/quantum?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
+                fetch(`http://localhost:5006/quantum?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
                     .then(response => response.json())
                     .then(data => {
                         if(data.error){
@@ -419,7 +419,7 @@ th {
 
             function runComparison() {
                 document.getElementById("comparison-result").innerHTML = "<div class='spinner'></div>";
-                fetch('http://localhost:5005/comparison')
+                fetch('http://localhost:5006/comparison')
                     .then(response => response.json())
                     .then(data => {
                         const classicalSharpe = data.classical.sharpe_ratio.toFixed(5);
