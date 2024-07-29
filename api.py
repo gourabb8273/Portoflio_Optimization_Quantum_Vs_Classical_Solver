@@ -24,6 +24,9 @@ def save_to_file(filename, data):
 
 class ClassicalOptimization(Resource):
     def get(self):
+        min_allocation_percentage = int(request.args.get('min_allocation_percentage', 2))  # Default to 2 if not provided
+        
+        print("Minimum Allocation Percentage:", min_allocation_percentage)
         print("Ss----------------------")
         # Define the decision variables
         solver = pywraplp.Solver.CreateSolver('GLOP')
@@ -64,6 +67,7 @@ class ClassicalOptimization(Resource):
             result = {
                 "return": final_return,
                 "risk": final_risk,
+                "dd":23,
                 "sharpe_ratio": sharpe_ratio,
                 "allocation": {
                     "Apple": x1_value,
@@ -71,7 +75,8 @@ class ClassicalOptimization(Resource):
                     "JP Morgan": x3_value,
                     "Boeing": x4_value
                 },
-                "time_taken": classical_time
+                "time_taken": classical_time,
+                "min_allocation_percentage":min_allocation_percentage
             }
             save_to_file(CLASSICAL_FILE, result)
             return jsonify(result)
@@ -80,6 +85,9 @@ class ClassicalOptimization(Resource):
 
 class QuantumOptimization(Resource):
     def get(self):
+        min_allocation_percentage = int(request.args.get('min_allocation_percentage', 2))  # Default to 2 if not provided
+
+        print("Minimum Allocation Percentage:", min_allocation_percentage)
         # Define the decision variables
         stocks = {'Apple': 0, 'Microsoft': 0, 'JP Morgan': 0, 'Boeing': 0}
         x1 = Integer('x1')
@@ -130,7 +138,8 @@ class QuantumOptimization(Resource):
             "risk": final_risk,
             "sharpe_ratio": sharpe_ratio,
             "allocation": stocks,
-            "time_taken": quantum_time
+            "time_taken": quantum_time,
+            "min_allocation_percentage":min_allocation_percentage
         }
         save_to_file(QUANTUM_FILE, result)
         return jsonify(result)
@@ -156,4 +165,4 @@ api.add_resource(Comparison, '/comparison')
 if __name__ == '__main__':
     # port = int(os.environ.get('PORT', 5000))  # Use PORT environment variable or default to 5000
     # app.run(port=port)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.', port=5001)
