@@ -339,7 +339,7 @@ th {
                 document.getElementById("classical-result").innerHTML = "<div class='spinner'></div>";
                 // debugger
                 // fetch('http://localhost:5000/classical')
-                fetch(`http://localhost:5001/classical?min_allocation_percentage=${minAllocation}`)
+                fetch(`http://localhost:5000/classical?min_allocation_percentage=${minAllocation}`)
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById("classical-result").innerHTML = `
@@ -359,7 +359,7 @@ th {
             function runQuantum() {
             const minAllocation = document.getElementById('min_allocation_percentage').value;
                 document.getElementById("quantum-result").innerHTML = "<div class='spinner'></div>";
-                fetch(`http://localhost:5001/quantum?min_allocation_percentage=${minAllocation}`)
+                fetch(`http://localhost:5000/quantum?min_allocation_percentage=${minAllocation}`)
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById("quantum-result").innerHTML = `
