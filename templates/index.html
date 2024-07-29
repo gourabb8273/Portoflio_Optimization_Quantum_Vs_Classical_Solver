@@ -403,7 +403,7 @@
             document.getElementById("classical-result").innerHTML = "<div class='spinner'></div>";
             // debugger
             // fetch('http://localhost:5000/classical')
-            fetch(`http://localhost:5000/classical?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
+            fetch(`http://localhost:5003/classical?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -441,7 +441,7 @@
             const minAllocation = document.getElementById('min_allocation_percentage').value;
             const acceptedRisk = document.getElementById('accepted_overal_risk').value;
             document.getElementById("quantum-result").innerHTML = "<div class='spinner'></div>";
-            fetch(`http://localhost:5000/quantum?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
+            fetch(`http://localhost:5003/quantum?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -477,7 +477,7 @@
 
         function runComparison() {
             document.getElementById("comparison-result").innerHTML = "<div class='spinner'></div>";
-            fetch('http://localhost:5000/comparison')
+            fetch('http://localhost:5003/comparison')
                 .then(response => response.json())
                 .then(data => {
                     const classicalSharpe = data.classical.sharpe_ratio.toFixed(5);
@@ -494,7 +494,12 @@
                         `;
                 })
                 .catch(error => {
-
+                    document.getElementById("classical-result").innerHTML = `
+                           <div>
+                             <h5>
+                               Something went wrong! seems network issue please try again later
+                            </h5>
+                            <div>`
                     console.error('Error fetching comparison data:', error)
                 }
 
