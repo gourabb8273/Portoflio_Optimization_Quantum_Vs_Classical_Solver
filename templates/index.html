@@ -414,7 +414,14 @@ th {
                             </table>
                         `;
                     })
-                    .catch(error => console.error('Error fetching quantum data:', error));
+                    .catch(error => { document.getElementById("classical-result").innerHTML = `
+                           <div>
+                             <h5>
+                               Something went wrong! seems network issue please try again later
+                            </h5>
+                            <div>`
+                            console.error('Error fetching quantum data:', error)
+              });
             }
 
             function runComparison() {
@@ -435,7 +442,16 @@ th {
                             </table>
                         `;
                     })
-                    .catch(error => console.error('Error fetching comparison data:', error));
+                    .catch(error => {
+                        document.getElementById("classical-result").innerHTML = `
+                           <div>
+                             <h5>
+                               Something went wrong! seems network issue please try again later
+                            </h5>
+                            <div>`
+                        console.error('Error fetching comparison data:', error)}
+                    
+                    );
             }
 
             function formatAllocation(allocation) {
