@@ -67,7 +67,6 @@ class ClassicalOptimization(Resource):
             result = {
                 "return": final_return,
                 "risk": final_risk,
-                "dd":23,
                 "sharpe_ratio": sharpe_ratio,
                 "allocation": {
                     "Apple": x1_value,
@@ -165,4 +164,4 @@ api.add_resource(Comparison, '/comparison')
 if __name__ == '__main__':
     # port = int(os.environ.get('PORT', 5000))  # Use PORT environment variable or default to 5000
     # app.run(port=port)
-    app.run(host='0.0.0.', port=5001)
+    app.run(host='0.0.0.0', port=5001)
