@@ -9,7 +9,7 @@ from ortools.linear_solver import pywraplp
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 
 
@@ -22,7 +22,7 @@ def save_to_file(filename, data):
 
 class ClassicalOptimization(Resource):
     def get(self):
-        print("Ss")
+        print("Ss----------------------")
         # Define the decision variables
         solver = pywraplp.Solver.CreateSolver('GLOP')
 
