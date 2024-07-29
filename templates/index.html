@@ -148,6 +148,12 @@ th {
     background-color: #f4f4f4;
 }
 
+.label-constraint {
+            /* display: block; */
+            font-weight: 800 !important;
+            margin-bottom: 5px;
+
+}
 
 @media (max-width: 768px) {
     .container {
@@ -178,6 +184,7 @@ th {
     }
 }
 
+
 @media (max-width: 480px) {
     .container {
         width: 100%;
@@ -205,14 +212,15 @@ th {
     table, th, td {
         font-size: 12px;
     }
+
     .form-section {
             margin-bottom: 20px;
         }
-        .form-section h2 {
+         h2 {
             font-size: 1.5em;
             margin-bottom: 10px;
         }
-        .form-section p {
+         p {
             margin-bottom: 10px;
             font-size: 1em;
             color: #555;
@@ -221,7 +229,9 @@ th {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
+
         }
+    
         input[type="number"] {
             padding: 5px;
             font-size: 1em;
@@ -269,8 +279,8 @@ th {
 
                         <td>
                             - The total investment must be 100% of the portfolio.<br>
-                            - Each stock must receive a minimum investment of 2% to ensure diversification.<br>
-                            - The portfolio's risk should not exceed 22%.
+                            - Each stock must receive a min. investment of 2% to ensure diversification if not selected by user.<br>
+                            - The portfolio's risk should not exceed 22% if not selected by user.
                         </td>
                     </tr>
                 </tbody>
@@ -282,9 +292,18 @@ th {
         <div class="container">
             <div class="form-section">
                 <h2>Custom Constraint</h2>
-                <p>To ensure effective diversification, each stock in your portfolio must be allocated a minimum percentage of the total investment. This constraint helps in spreading the investment across multiple assets, reducing risk and enhancing stability.</p>
-                <label for="min_allocation_percentage">Minimum Allocation Percentage:</label>
-                <input type="number" id="min_allocation_percentage" name="min_allocation_percentage" min="0" max="100" value="2">
+                <div>
+                    <p>To ensure effective diversification, each stock in your portfolio must be allocated a minimum percentage of the total investment. This constraint helps in spreading the investment across multiple assets, reducing risk and enhancing stability.</p>
+                    <label  class="label-constraint" for="min_allocation_percentage">Minimum Allocation Percentage:</label>
+                    <input type="number" id="min_allocation_percentage" name="min_allocation_percentage" min="0" max="100" value="2">
+                </div>
+                <div>
+                    <!-- <h2>Accepted Overall Risk in %</h2> -->
+                    <p>Please vary the accepted risk if optimal solution is not found due to higher diversification.</p>
+                    <label class="label-constraint" for="accepted_overal_risk">Accepted Overall Risk in %:</label>
+                    <input type="number" id="accepted_overal_risk" name="accepted_overal_risk" min="0" max="100" value="22">
+                </div>
+                
                 <!-- <button type="button" onclick="runOptimization()">Submit</button> -->
             </div>
         </div>
@@ -336,12 +355,22 @@ th {
         <script>
             function runClassical() {
                 const minAllocation = document.getElementById('min_allocation_percentage').value;
+                const acceptedRisk = document.getElementById('accepted_overal_risk').value;
                 document.getElementById("classical-result").innerHTML = "<div class='spinner'></div>";
                 // debugger
                 // fetch('http://localhost:5000/classical')
-                fetch(`http://localhost:5005/classical?min_allocation_percentage=${minAllocation}`)
+                fetch(`http://localhost:5005/classical?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
                     .then(response => response.json())
                     .then(data => {
+                        if(data.error){
+                            document.getElementById("classical-result").innerHTML = `
+                           <div>
+                             <h5>
+                                No Optimum Solution found! Please reduce the min allocation and increase accepted risk and try again!
+                            </h5>
+                            <div>`
+                        }
+                        else
                         document.getElementById("classical-result").innerHTML = `
                             <table>
                                 <tr><th>Metric</th><th>Value</th></tr>
@@ -353,15 +382,27 @@ th {
                             </table>
                         `;
                     })
-                    .catch(error => console.error('Error fetching classical data:', error));
+                    .catch(error =>{
+                        console.error('Error fetching classical data:', error);
+                    } )
             }
 
             function runQuantum() {
             const minAllocation = document.getElementById('min_allocation_percentage').value;
+            const acceptedRisk = document.getElementById('accepted_overal_risk').value;
                 document.getElementById("quantum-result").innerHTML = "<div class='spinner'></div>";
-                fetch(`http://localhost:5005/quantum?min_allocation_percentage=${minAllocation}`)
+                fetch(`http://localhost:5005/quantum?min_allocation_percentage=${minAllocation}&accepted_risk=${acceptedRisk}`)
                     .then(response => response.json())
                     .then(data => {
+                        if(data.error){
+                            document.getElementById("classical-result").innerHTML = `
+                           <div>
+                             <h5>
+                                No Optimum Solution found! Please reduce the min allocation and increase accepted risk and try again!
+                            </h5>
+                            <div>`
+                        }
+                        else
                         document.getElementById("quantum-result").innerHTML = `
                             <table>
                                 <tr><th>Metric</th><th>Value</th></tr>

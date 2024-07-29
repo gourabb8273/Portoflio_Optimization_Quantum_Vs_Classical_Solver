@@ -25,7 +25,8 @@ def save_to_file(filename, data):
 class ClassicalOptimization(Resource):
     def get(self):
         min_allocation_percentage = int(request.args.get('min_allocation_percentage', 2))  # Default to 2 if not provided
-        
+        # min_allocation_percentage = request.args.get('min_allocation_percentage', default=2, type=int)
+        accepted_risk = int(request.args.get('accepted_risk', default=22, type=float))
         print("Minimum Allocation Percentage:", min_allocation_percentage)
         print("Ss----------------------")
         # Define the decision variables
@@ -40,12 +41,12 @@ class ClassicalOptimization(Resource):
         total_weighted_risk = 0.3013 * x1 + 0.2124 * x2 + 0.2155 * x3 + 0.4445 * x4
 
         solver.Add(x1 + x2 + x3 + x4 == 100)
-        min_allocation_percentage = 2
+        # min_allocation_percentage = 2
         solver.Add(x1 >= min_allocation_percentage)
         solver.Add(x2 >= min_allocation_percentage)
         solver.Add(x3 >= min_allocation_percentage)
         solver.Add(x4 >= min_allocation_percentage)
-        solver.Add(total_weighted_risk <= 22)
+        solver.Add(total_weighted_risk <= accepted_risk)
 
         risk_free_rate = 0.03
         excess_return = total_weighted_return - risk_free_rate
@@ -75,6 +76,7 @@ class ClassicalOptimization(Resource):
                     "Boeing": x4_value
                 },
                 "time_taken": classical_time,
+                "accepted_risk":accepted_risk,
                 "min_allocation_percentage":min_allocation_percentage
             }
             save_to_file(CLASSICAL_FILE, result)
@@ -85,7 +87,7 @@ class ClassicalOptimization(Resource):
 class QuantumOptimization(Resource):
     def get(self):
         min_allocation_percentage = int(request.args.get('min_allocation_percentage', 2))  # Default to 2 if not provided
-
+        accepted_risk = int(request.args.get('accepted_risk', default=22, type=float))
         print("Minimum Allocation Percentage:", min_allocation_percentage)
         # Define the decision variables
         stocks = {'Apple': 0, 'Microsoft': 0, 'JP Morgan': 0, 'Boeing': 0}
@@ -103,8 +105,8 @@ class QuantumOptimization(Resource):
         cqm.set_objective(excess_return)
 
         cqm.add_constraint(x1 + x2 + x3 + x4 == 100, label='total allocation')
-        cqm.add_constraint(total_weighted_risk <= 22, label='risk constraint')
-        min_allocation_percentage = 2
+        cqm.add_constraint(total_weighted_risk <= accepted_risk, label='risk constraint')
+        # min_allocation_percentage = 2
         cqm.add_constraint(x1 >= min_allocation_percentage, label='x1 allocation')
         cqm.add_constraint(x2 >= min_allocation_percentage, label='x2 allocation')
         cqm.add_constraint(x3 >= min_allocation_percentage, label='x3 allocation')
@@ -138,6 +140,7 @@ class QuantumOptimization(Resource):
             "sharpe_ratio": sharpe_ratio,
             "allocation": stocks,
             "time_taken": quantum_time,
+            "accepted_risk":accepted_risk,
             "min_allocation_percentage":min_allocation_percentage
         }
         save_to_file(QUANTUM_FILE, result)

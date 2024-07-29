@@ -1,1 +1,1 @@
-{"return": 26.000038709677412, "risk": 22.0, "sharpe_ratio": 1.1818199413489732, "allocation": {"Apple": 2.0, "Microsoft": 57.935483870968845, "JP Morgan": 38.06451612903117, "Boeing": 2.0}, "time_taken": 0.0004467964172363281, "min_allocation_percentage": 2}
+{"return": 26.3804, "risk": 22.1734, "sharpe_ratio": 1.1897318408543571, "allocation": {"Apple": 2.0, "Microsoft": 2.0, "JP Morgan": 94.00000000000001, "Boeing": 2.0}, "time_taken": 0.0003829002380371094, "accepted_risk": 23, "min_allocation_percentage": 2}
