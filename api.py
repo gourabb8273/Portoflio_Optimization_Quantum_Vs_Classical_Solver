@@ -167,4 +167,4 @@ api.add_resource(Comparison, '/comparison')
 if __name__ == '__main__':
     # port = int(os.environ.get('PORT', 5000))  # Use PORT environment variable or default to 5000
     # app.run(port=port)
-    app.run(port=5006)
+    app.run(port=5000)
